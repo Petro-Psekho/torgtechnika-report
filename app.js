@@ -26,7 +26,7 @@ const Hero = () => `
         <span class="eyebrow">Виробничі процеси · системний розвиток</span>
         <h1 id="report-title">Звіт про виконану роботу</h1>
         <p class="hero-subtitle">Розвиток, стандартизація та автоматизація виробничих процесів</p>
-        <p class="hero-intro">Звіт охоплює конструкторську підготовку, додрукарські процеси, автоматизацію, облік оснащення та роботу з постачальниками.</p>
+        <p class="hero-intro">${escapeHtml(data.introduction)}</p>
       </div>
       <aside class="scope-card" aria-label="Охоплення звіту">
         <span class="scope-kicker">Охоплення</span>
@@ -35,6 +35,22 @@ const Hero = () => `
         <span>єдиний виробничий контур</span>
       </aside>
     </div>
+  </section>`;
+
+const ReportOverview = () => `
+  <section class="section report-overview" aria-labelledby="overview-title">
+    <div class="section-heading compact-heading">
+      <span class="section-index">00</span>
+      <div>
+        <p class="kicker">Повний зміст звіту</p>
+        <h2 id="overview-title">Основні напрями роботи</h2>
+      </div>
+    </div>
+    <p class="overview-lead">${escapeHtml(data.introduction)}</p>
+    <p class="overview-caption">Робота виконувалася за такими основними напрямами:</p>
+    <ul class="overview-list">
+      ${data.directions.map((direction) => `<li>${escapeHtml(direction)}</li>`).join('')}
+    </ul>
   </section>`;
 
 const ExecutiveSummary = () => `
@@ -98,6 +114,28 @@ const StatusBadge = (status) => {
   return `<span class="status status-${slug}"><span aria-hidden="true"></span>${escapeHtml(status)}</span>`;
 };
 
+const DetailBlock = (detail) => `
+  <div class="detail-block">
+    <h4>${escapeHtml(detail.label)}</h4>
+    ${(detail.paragraphs || []).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}
+    ${detail.bullets ? `<ul>${detail.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}</ul>` : ''}
+  </div>`;
+
+const ContactBlock = (item) => {
+  if (!item.contacts?.length && !item.links?.length) return '';
+  return `
+    <aside class="contact-block" aria-label="Контакти та посилання">
+      <h4>Контакти та посилання</h4>
+      ${item.contacts?.map((contact) => `
+        <div class="contact-row">
+          <div><strong>${escapeHtml(contact.name)}</strong>${contact.role ? `<span>${escapeHtml(contact.role)}</span>` : ''}</div>
+          <a href="tel:${contact.phone.replace(/[^+\d]/g, '')}">${escapeHtml(contact.phone)}</a>
+        </div>`).join('') || ''}
+      ${item.links?.length ? `<div class="external-links">${item.links.map((link) => `
+        <a href="${escapeHtml(link.href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}<span aria-hidden="true">↗</span></a>`).join('')}</div>` : ''}
+    </aside>`;
+};
+
 const ReportAccordion = (item) => {
   const panelId = `panel-${item.id}`;
   const triggerId = `trigger-${item.id}`;
@@ -116,11 +154,7 @@ const ReportAccordion = (item) => {
       </h3>
       <div class="accordion-panel" id="${panelId}" role="region" aria-labelledby="${triggerId}" hidden>
         <div class="detail-grid">
-          ${item.details.map((detail) => `
-            <div class="detail-block">
-              <h4>${escapeHtml(detail.label)}</h4>
-              <p>${escapeHtml(detail.text)}</p>
-            </div>`).join('')}
+          ${item.details.map(DetailBlock).join('')}
         </div>
         ${item.subcards ? `
           <div class="subcards" aria-label="Інструменти TorgTechnikaTools">
@@ -128,9 +162,11 @@ const ReportAccordion = (item) => {
               <section class="subcard">
                 <span class="subcard-label">Внутрішній інструмент</span>
                 <h4>${escapeHtml(card.title)}</h4>
-                <p>${escapeHtml(card.text)}</p>
+                ${card.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}
+                ${card.bullets ? `<h5>Результат</h5><ul>${card.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}</ul>` : ''}
               </section>`).join('')}
           </div>` : ''}
+        ${ContactBlock(item)}
       </div>
     </article>`;
 };
@@ -170,16 +206,17 @@ const FinalSummary = () => `
       <div>
         <p class="kicker">Підсумок</p>
         <h2 id="final-title">Загальний результат</h2>
-        <p class="final-lead">Послідовно опрацьовано ключові етапи виробничої підготовки: стандартизовано програмне середовище, автоматизовано повторювані операції, організовано облік оснащення та сформовано напрям технічного розвитку.</p>
+        <p class="final-lead">${escapeHtml(data.final.lead)}</p>
+        <p class="final-sequence">${escapeHtml(data.final.sequence)}</p>
       </div>
-      <ul class="achievement-list">
-        <li>Єдині інструменти та методи роботи</li>
-        <li>Внутрішня автоматизація додрукарських операцій</li>
-        <li>Замовлення й облік технологічного оснащення</li>
-        <li>Підбір обладнання та робота з партнерами</li>
-      </ul>
+      <div>
+        <h3 class="achievement-title">Проведена робота дала змогу:</h3>
+        <ul class="achievement-list">
+          ${data.final.achievements.map((achievement) => `<li>${escapeHtml(achievement)}</li>`).join('')}
+        </ul>
+      </div>
     </div>
-    <blockquote>Створено комплексну систему — від конструкції до виробництва та контролю ресурсу оснащення.</blockquote>
+    <blockquote>${escapeHtml(data.final.conclusion)}</blockquote>
     <div class="print-actions">
       <button class="button button-primary" type="button" data-expand-all>Розгорнути весь звіт</button>
       <button class="button button-secondary" type="button" data-print>Друк / Зберегти PDF</button>
@@ -191,6 +228,7 @@ const App = () => `
   <main id="main">
     ${Hero()}
     <div class="shell main-content">
+      ${ReportOverview()}
       ${ExecutiveSummary()}
       ${ResultMetric()}
       ${ProcessTimeline()}
