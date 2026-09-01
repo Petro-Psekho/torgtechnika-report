@@ -85,24 +85,6 @@ const ResultMetric = () => `
     </div>
   </aside>`;
 
-const ProcessTimeline = () => `
-  <section class="section process" aria-labelledby="process-title">
-    <div class="section-heading">
-      <span class="section-index">02</span>
-      <div>
-        <p class="kicker">Наскрізна послідовність</p>
-        <h2 id="process-title">Процес після впровадження змін</h2>
-      </div>
-    </div>
-    <ol class="process-list">
-      ${data.process.map((step, index) => `
-        <li>
-          <span class="process-number">${String(index + 1).padStart(2, '0')}</span>
-          <span>${escapeHtml(step)}</span>
-        </li>`).join('')}
-    </ol>
-  </section>`;
-
 const StatusBadge = (status) => {
   const slug = {
     'Впроваджено': 'implemented',
@@ -231,7 +213,6 @@ const App = () => `
       ${ReportOverview()}
       ${ExecutiveSummary()}
       ${ResultMetric()}
-      ${ProcessTimeline()}
     </div>
     ${SectionNavigation()}
     <div class="shell report-content">

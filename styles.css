@@ -84,11 +84,6 @@ h1 { max-width: 780px; margin-bottom: 14px; font-size: clamp(36px, 9.5vw, 68px);
 .metric-flow strong { color: white; font-size: 23px; line-height: 1.1; letter-spacing: -.025em; }
 .metric-flow .metric-arrow { color: #62c9c2; font-size: 28px; transform: rotate(90deg); }
 
-.process-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; counter-reset: process; }
-.process-list li { position: relative; display: grid; grid-template-columns: 42px 1fr; gap: 12px; align-items: center; min-height: 58px; padding: 8px 0; font-weight: 700; }
-.process-list li:not(:last-child)::after { content: ''; position: absolute; left: 20px; top: 48px; bottom: -10px; width: 1px; background: var(--line); }
-.process-number { position: relative; z-index: 1; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; color: var(--accent-dark); background: var(--surface); font-size: 12px; font-weight: 800; }
-
 .section-nav { position: sticky; top: var(--header-height); z-index: 30; border-block: 1px solid var(--line); background: rgba(255,255,255,.96); backdrop-filter: blur(12px); }
 .nav-inner { display: flex; min-width: 0; align-items: center; gap: 10px; padding-block: 8px; }
 .nav-label { display: none; color: var(--ink-muted); font-size: 12px; font-weight: 800; text-transform: uppercase; }
@@ -186,9 +181,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid #73c9c4; outline-offs
   .main-content { padding-block: 72px; }
   .summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .summary-card { padding: 22px 18px; }
-  .process-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  .process-list li { grid-template-columns: 42px 1fr; padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-  .process-list li:not(:last-child)::after { content: none; }
   .nav-label { display: inline; }
   .nav-actions { display: flex; }
   .report-section-header { grid-template-columns: 64px 1fr; }
@@ -201,8 +193,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid #73c9c4; outline-offs
 }
 
 @media (min-width: 1080px) {
-  .process-list { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-  .process-list li:last-child { grid-column: 4; }
   .report-content { padding-block: 76px 96px; }
   .accordion-trigger { padding: 18px 20px; }
   .accordion-panel { padding: 0 20px 24px 82px; }
