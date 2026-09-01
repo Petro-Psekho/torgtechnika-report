@@ -64,11 +64,12 @@ const ExecutiveSummary = () => `
     </div>
     <div class="summary-grid">
       ${data.executive.map((item, index) => `
-        <article class="summary-card">
+        <a class="summary-card" href="#${escapeHtml(item.target)}" aria-label="${escapeHtml(item.title)} — перейти до відповідного розділу">
           <span class="summary-number">0${index + 1}</span>
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.text)}</p>
-        </article>`).join('')}
+          <span class="summary-link">До розділу <span aria-hidden="true">↓</span></span>
+        </a>`).join('')}
     </div>
   </section>`;
 
@@ -171,9 +172,14 @@ const ReportSection = (section) => `
 const SectionNavigation = () => `
   <nav class="section-nav" aria-label="Навігація за напрямами звіту">
     <div class="shell nav-inner">
-      <span class="nav-label">Напрями</span>
-      <div class="nav-scroll">
-        ${data.sections.map((section) => `<a href="#${section.id}" data-nav-link>${escapeHtml(section.navLabel)}</a>`).join('')}
+      <div class="nav-main">
+        <span class="nav-label">Напрями</span>
+        <div class="nav-scroll-wrap">
+          <div class="nav-scroll" data-nav-scroll>
+            ${data.sections.map((section) => `<a href="#${section.id}" data-nav-link>${escapeHtml(section.navLabel)}</a>`).join('')}
+          </div>
+          <span class="scroll-cue" aria-hidden="true">Гортайте <b>→</b></span>
+        </div>
       </div>
       <div class="nav-actions" aria-label="Керування звітом">
         <button type="button" data-expand-all>Відкрити всі</button>
@@ -257,6 +263,19 @@ document.querySelector('[data-print]').addEventListener('click', () => window.pr
 
 const sections = data.sections.map((section) => document.getElementById(section.id));
 const navLinks = [...document.querySelectorAll('[data-nav-link]')];
+const navScroll = document.querySelector('[data-nav-scroll]');
+const navScrollWrap = navScroll.closest('.nav-scroll-wrap');
+
+const updateScrollCue = () => {
+  const canScroll = navScroll.scrollWidth > navScroll.clientWidth + 4;
+  const hasStartedScrolling = navScroll.scrollLeft > 4;
+  navScrollWrap.classList.toggle('show-scroll-cue', canScroll && !hasStartedScrolling);
+};
+
+navScroll.addEventListener('scroll', updateScrollCue, { passive: true });
+window.addEventListener('resize', updateScrollCue);
+requestAnimationFrame(updateScrollCue);
+
 const observer = new IntersectionObserver((entries) => {
   const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
   if (!visible) return;
